@@ -1,0 +1,192 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Spanish Wording</title>
+  <link rel="stylesheet" href="css/styles.css">
+</head>
+<body>
+  <header>
+    <h1>Spanish Wording</h1>
+  </header>
+
+  <main>
+    <!-- Quiz View -->
+    <section id="view-quiz" class="view active">
+      <div id="quiz-empty" class="empty-state" style="display:none;">
+        <p>No words yet! Add words from the <strong>Words</strong> tab or import a file from <strong>Settings</strong>.</p>
+        <button onclick="switchView('wordlist')">Add Words</button>
+      </div>
+      <div id="quiz-content" style="display:none;">
+        <div id="quiz-direction-badge" class="direction-badge">ES → EN</div>
+        <div id="quiz-card" class="quiz-card">
+          <div class="card-score" id="quiz-score"></div>
+          <div class="card-prompt" id="quiz-prompt"></div>
+        </div>
+        <div id="quiz-input-area" class="quiz-input-area">
+          <input type="text" id="quiz-answer" placeholder="Type your answer..." autocomplete="off" autofocus>
+          <div class="quiz-buttons">
+            <button id="btn-check" class="btn btn-primary">Check</button>
+            <button id="btn-dont-know" class="btn btn-secondary">I Don't Know</button>
+          </div>
+        </div>
+        <div id="quiz-result" class="quiz-result" style="display:none;">
+          <div id="result-indicator" class="result-indicator"></div>
+          <div id="result-answer" class="result-answer"></div>
+          <div id="result-actions" class="result-actions">
+            <button id="btn-add-alt" class="btn btn-small btn-outline" style="display:none;">Add My Answer as Valid</button>
+          </div>
+          <button id="btn-next" class="btn btn-primary btn-wide">Next Word</button>
+        </div>
+      </div>
+    </section>
+
+    <!-- Word List View -->
+    <section id="view-wordlist" class="view">
+      <div class="wordlist-header">
+        <input type="text" id="wordlist-search" placeholder="Search words...">
+        <button id="btn-add-word" class="btn btn-primary">+ Add</button>
+      </div>
+      <div id="wordlist-table" class="wordlist-table"></div>
+
+      <!-- Add/Edit Word Modal -->
+      <div id="word-modal" class="modal" style="display:none;">
+        <div class="modal-content">
+          <h3 id="modal-title">Add Word</h3>
+          <label>Spanish
+            <input type="text" id="modal-spanish" placeholder="e.g. hola">
+          </label>
+          <label>English (separate multiple with ;)
+            <input type="text" id="modal-english" placeholder="e.g. hello;hi">
+          </label>
+          <input type="hidden" id="modal-word-id">
+          <div class="modal-buttons">
+            <button id="btn-modal-save" class="btn btn-primary">Save</button>
+            <button id="btn-modal-delete" class="btn btn-danger" style="display:none;">Delete</button>
+            <button id="btn-modal-cancel" class="btn btn-secondary">Cancel</button>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Stats View -->
+    <section id="view-stats" class="view">
+      <div class="stats-section">
+        <h3>Today</h3>
+        <div class="stat-row">
+          <span id="stat-daily-label">0 / 0</span>
+          <span id="stat-daily-pct">0%</span>
+        </div>
+        <div class="progress-bar"><div id="stat-daily-bar" class="progress-fill"></div></div>
+      </div>
+      <div class="stats-section">
+        <h3>All Time</h3>
+        <div class="stat-row">
+          <span id="stat-alltime-label">0 / 0</span>
+          <span id="stat-alltime-pct">0%</span>
+        </div>
+        <div class="progress-bar"><div id="stat-alltime-bar" class="progress-fill"></div></div>
+      </div>
+      <div class="stats-section">
+        <h3>Score Distribution</h3>
+        <div id="stat-distribution" class="score-distribution"></div>
+      </div>
+    </section>
+
+    <!-- Settings View -->
+    <section id="view-settings" class="view">
+      <div class="settings-section">
+        <h3>Quiz Direction</h3>
+        <div class="direction-options">
+          <label class="radio-label">
+            <input type="radio" name="direction" value="es-to-en" checked> Spanish → English
+          </label>
+          <label class="radio-label">
+            <input type="radio" name="direction" value="en-to-es"> English → Spanish
+          </label>
+          <label class="radio-label">
+            <input type="radio" name="direction" value="random"> Random
+          </label>
+        </div>
+      </div>
+      <div class="settings-section">
+        <h3>Score Distribution</h3>
+        <p class="settings-hint">Control how often each score group appears in the quiz.</p>
+        <div class="slider-group">
+          <label>
+            <span class="slider-label">Unfamiliar (★☆☆☆☆)</span>
+            <span class="slider-value" id="dist-val-1">40%</span>
+          </label>
+          <input type="range" min="0" max="100" value="40" id="dist-slider-1" data-group="1">
+        </div>
+        <div class="slider-group">
+          <label>
+            <span class="slider-label">Familiar (★★☆☆☆ – ★★★☆☆)</span>
+            <span class="slider-value" id="dist-val-2">30%</span>
+          </label>
+          <input type="range" min="0" max="100" value="30" id="dist-slider-2" data-group="2">
+        </div>
+        <div class="slider-group">
+          <label>
+            <span class="slider-label">Confident (★★★★☆)</span>
+            <span class="slider-value" id="dist-val-3">20%</span>
+          </label>
+          <input type="range" min="0" max="100" value="20" id="dist-slider-3" data-group="3">
+        </div>
+        <div class="slider-group">
+          <label>
+            <span class="slider-label">Mastered (★★★★★)</span>
+            <span class="slider-value" id="dist-val-4">10%</span>
+          </label>
+          <input type="range" min="0" max="100" value="10" id="dist-slider-4" data-group="4">
+        </div>
+        <div id="dist-total" class="dist-total">Total: 100%</div>
+      </div>
+      <div class="settings-section">
+        <h3>Import Words</h3>
+        <p class="settings-hint">Upload a CSV or JSON file.</p>
+        <p class="settings-hint">CSV format: <code>spanish,english</code> (use <code>;</code> for multiple translations)<br>
+        JSON format: <code>[{"spanish":"hola","english":["hello","hi"]}]</code></p>
+        <input type="file" id="import-file" accept=".csv,.json">
+        <div id="import-result" class="import-result" style="display:none;"></div>
+      </div>
+      <div class="settings-section">
+        <h3>Export Words</h3>
+        <button id="btn-export" class="btn btn-outline">Export as JSON</button>
+      </div>
+    </section>
+  </main>
+
+  <nav id="bottom-nav">
+    <button class="nav-btn active" data-view="quiz">
+      <svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2"/><rect x="9" y="3" width="6" height="4" rx="1"/><path d="M9 14l2 2 4-4"/></svg>
+      <span>Quiz</span>
+    </button>
+    <button class="nav-btn" data-view="wordlist">
+      <svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 6h16M4 12h16M4 18h10"/></svg>
+      <span>Words</span>
+    </button>
+    <button class="nav-btn" data-view="stats">
+      <svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="12" width="4" height="9"/><rect x="10" y="8" width="4" height="13"/><rect x="17" y="3" width="4" height="18"/></svg>
+      <span>Stats</span>
+    </button>
+    <button class="nav-btn" data-view="settings">
+      <svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 00.33 1.82l.06.06a2 2 0 01-2.83 2.83l-.06-.06a1.65 1.65 0 00-1.82-.33 1.65 1.65 0 00-1 1.51V21a2 2 0 01-4 0v-.09A1.65 1.65 0 009 19.4a1.65 1.65 0 00-1.82.33l-.06.06a2 2 0 01-2.83-2.83l.06-.06A1.65 1.65 0 004.68 15a1.65 1.65 0 00-1.51-1H3a2 2 0 010-4h.09A1.65 1.65 0 004.6 9a1.65 1.65 0 00-.33-1.82l-.06-.06a2 2 0 012.83-2.83l.06.06A1.65 1.65 0 009 4.68a1.65 1.65 0 001-1.51V3a2 2 0 014 0v.09a1.65 1.65 0 001 1.51 1.65 1.65 0 001.82-.33l.06-.06a2 2 0 012.83 2.83l-.06.06A1.65 1.65 0 0019.4 9a1.65 1.65 0 001.51 1H21a2 2 0 010 4h-.09a1.65 1.65 0 00-1.51 1z"/></svg>
+      <span>Settings</span>
+    </button>
+  </nav>
+
+  <script src="https://www.gstatic.com/firebasejs/10.14.0/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.14.0/firebase-firestore-compat.js"></script>
+  <script src="js/utils.js"></script>
+  <script src="js/fuzzy.js"></script>
+  <script src="js/db.js"></script>
+  <script src="js/stats.js"></script>
+  <script src="js/quiz.js"></script>
+  <script src="js/wordlist.js"></script>
+  <script src="js/settings.js"></script>
+  <script src="js/import.js"></script>
+  <script src="js/app.js"></script>
+</body>
+</html>
