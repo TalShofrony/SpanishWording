@@ -246,8 +246,9 @@ main {
 }
 
 .result-answer {
-  font-size: 1rem;
-  color: var(--text-secondary);
+  font-size: 1.5rem;
+  color: var(--danger);
+  font-weight: 700;
   margin-bottom: 12px;
 }
 

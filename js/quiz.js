@@ -84,6 +84,13 @@ async function initQuiz() {
   $('#quiz-answer').onkeydown = (e) => {
     if (e.key === 'Enter') handleCheck();
   };
+  document.addEventListener('keydown', (e) => {
+    if (e.key === 'Enter' &&
+        $('#view-quiz').classList.contains('active') &&
+        $('#quiz-result').style.display !== 'none') {
+      showNextCard();
+    }
+  });
 }
 
 function showNextCard() {
