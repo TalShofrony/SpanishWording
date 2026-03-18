@@ -162,7 +162,9 @@ async function showResult(correct, dir) {
   const correctAnswers = dir === 'es-to-en'
     ? _currentWord.english.join(', ')
     : _currentWord.spanish;
-  $('#result-answer').textContent = correct ? '' : `Answer: ${correctAnswers}`;
+  const resultAnswer = $('#result-answer');
+  resultAnswer.textContent = correct ? '' : `Answer: ${correctAnswers}`;
+  resultAnswer.style.display = correct ? 'none' : 'block';
 
   // Show "Add Alt Translation" if wrong and user typed something
   if (!correct && _userAnswer) {
