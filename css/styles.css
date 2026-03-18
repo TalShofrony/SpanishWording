@@ -530,6 +530,65 @@ main {
   color: var(--text-secondary);
 }
 
+/* === Knowledge Index === */
+.knowledge-index-section {
+  text-align: center;
+}
+
+.knowledge-index {
+  position: relative;
+  width: 140px;
+  height: 140px;
+  margin: 8px auto 12px;
+}
+
+.ki-ring {
+  width: 100%;
+  height: 100%;
+  transform: rotate(-90deg);
+}
+
+.ki-ring-bg {
+  fill: none;
+  stroke: #e2e8f0;
+  stroke-width: 10;
+}
+
+.ki-ring-fill {
+  fill: none;
+  stroke: url(#ki-gradient);
+  stroke-width: 10;
+  stroke-linecap: round;
+  stroke-dasharray: 326.73;
+  stroke-dashoffset: 326.73;
+  transition: stroke-dashoffset 0.8s ease;
+}
+
+.ki-value {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  font-size: 2rem;
+  font-weight: 800;
+  background: linear-gradient(135deg, #6366f1, #8b5cf6);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+.ki-label {
+  font-size: 0.95rem;
+  font-weight: 600;
+  color: var(--text);
+  margin-bottom: 4px;
+}
+
+.ki-detail {
+  font-size: 0.8rem;
+  color: var(--text-secondary);
+}
+
 /* === Settings === */
 .settings-section {
   background: var(--card-bg);

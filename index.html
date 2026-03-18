@@ -79,6 +79,24 @@
 
     <!-- Stats View -->
     <section id="view-stats" class="view">
+      <div class="stats-section knowledge-index-section">
+        <h3>Knowledge Index</h3>
+        <div class="knowledge-index">
+          <svg class="ki-ring" viewBox="0 0 120 120">
+            <defs>
+              <linearGradient id="ki-gradient" x1="0%" y1="0%" x2="100%" y2="0%">
+                <stop offset="0%" stop-color="#6366f1"/>
+                <stop offset="100%" stop-color="#a78bfa"/>
+              </linearGradient>
+            </defs>
+            <circle class="ki-ring-bg" cx="60" cy="60" r="52"/>
+            <circle class="ki-ring-fill" id="ki-ring-fill" cx="60" cy="60" r="52"/>
+          </svg>
+          <div class="ki-value" id="ki-value">0%</div>
+        </div>
+        <div class="ki-label" id="ki-label">No words yet</div>
+        <div class="ki-detail" id="ki-detail"></div>
+      </div>
       <div class="stats-section">
         <h3>Today</h3>
         <div class="stat-row">
