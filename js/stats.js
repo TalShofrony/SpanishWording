@@ -111,7 +111,8 @@ async function renderStats() {
     weekDays.push({ date: dateStr, day: dayName, total: data.total, correct: data.correct });
   }
 
-  const maxWeek = Math.max(...weekDays.map(d => d.total), 1);
+  const rawMaxWeek = Math.max(...weekDays.map(d => d.total), 1);
+  const maxWeek = niceAxisMax(rawMaxWeek);
   const W = 280, H = 150;
   const padL = 28, padR = 8, padT = 8, padB = 22;
   const cW = W - padL - padR, cH = H - padT - padB;
@@ -192,7 +193,8 @@ async function renderStats() {
     }
   }
 
-  const maxMonth = Math.max(...months.map(m => m.total), 1);
+  const rawMaxMonth = Math.max(...months.map(m => m.total), 1);
+  const maxMonth = niceAxisMax(rawMaxMonth);
   const MW = 280, MH = 140;
   const mPadL = 28, mPadR = 8, mPadT = 8, mPadB = 22;
   const mCW = MW - mPadL - mPadR, mCH = MH - mPadT - mPadB;

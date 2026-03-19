@@ -21,3 +21,11 @@ function pct(correct, total) {
   if (total === 0) return 0;
   return Math.round((correct / total) * 100);
 }
+
+function niceAxisMax(raw) {
+  if (raw <= 0) return 10;
+  if (raw <= 10) return 10;
+  if (raw <= 50) return Math.ceil(raw / 10) * 10;
+  if (raw <= 200) return Math.ceil(raw / 50) * 50;
+  return Math.ceil(raw / 100) * 100;
+}
