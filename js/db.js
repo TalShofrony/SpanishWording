@@ -56,6 +56,15 @@ async function putStats(obj) {
   await _db.collection('stats').doc(id).set(data);
 }
 
+async function putDailyHistory(date, correct, total) {
+  await _db.collection('history').doc(date).set({ date, correct, total });
+}
+
+async function getAllHistory() {
+  const snapshot = await _db.collection('history').get();
+  return snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
+}
+
 async function bulkAddWords(words) {
   let added = 0, skipped = 0, errors = 0;
 
