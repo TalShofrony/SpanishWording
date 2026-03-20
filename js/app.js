@@ -15,6 +15,9 @@ function switchView(viewName) {
 document.addEventListener('DOMContentLoaded', async () => {
   await openDB();
 
+  // One-time backfill of history from alltime stats
+  await backfillHistory();
+
   // Init all modules
   await initQuiz();
   initSettings();

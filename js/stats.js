@@ -35,6 +35,34 @@ async function recordAnswer(isCorrect) {
   await putDailyHistory(daily.date, daily.correct, daily.total);
 }
 
+async function backfillHistory() {
+  const done = localStorage.getItem('sw-history-backfilled');
+  if (done) return;
+
+  const alltime = await getOrCreateAlltime();
+  const daily = await getOrResetDaily();
+  const history = await getAllHistory();
+
+  const historyTotal = history.reduce((s, h) => s + h.total, 0);
+  const historyCorrect = history.reduce((s, h) => s + h.correct, 0);
+
+  const remainTotal = alltime.total - daily.total - historyTotal;
+  const remainCorrect = alltime.correct - daily.correct - historyCorrect;
+
+  if (remainTotal > 0) {
+    // Assign remainder to the day before yesterday
+    const d = new Date();
+    d.setDate(d.getDate() - 2);
+    const dateStr = d.toISOString().slice(0, 10);
+    // Only write if that date doesn't already have history
+    if (!history.find(h => h.date === dateStr)) {
+      await putDailyHistory(dateStr, Math.max(remainCorrect, 0), remainTotal);
+    }
+  }
+
+  localStorage.setItem('sw-history-backfilled', '1');
+}
+
 async function renderStats() {
   const daily = await getOrResetDaily();
   const alltime = await getOrCreateAlltime();
