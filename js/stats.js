@@ -263,4 +263,76 @@ async function renderStats() {
       <span class="legend-item"><span class="legend-dot" style="background:rgba(99,102,241,0.25)"></span>Practiced</span>
       <span class="legend-item"><span class="legend-dot" style="background:#6366f1"></span>Correct</span>
     </div>`;
+
+  // Accuracy chart — % correct per day (last 7 days) as line + per month as bars
+  const AW = 280, AH = 150;
+  const aPadL = 32, aPadR = 8, aPadT = 8, aPadB = 22;
+  const aCW = AW - aPadL - aPadR, aCH = AH - aPadT - aPadB;
+
+  // Weekly accuracy line
+  const weekAcc = weekDays.map(d => d.total > 0 ? Math.round((d.correct / d.total) * 100) : null);
+
+  let aSvg = `<svg viewBox="0 0 ${AW} ${AH}" class="chart-svg">`;
+  // Grid lines (0%, 25%, 50%, 75%, 100%)
+  for (let i = 0; i <= 4; i++) {
+    const y = aPadT + (i / 4) * aCH;
+    const val = 100 - i * 25;
+    aSvg += `<line x1="${aPadL}" y1="${y}" x2="${AW - aPadR}" y2="${y}" stroke="#e2e8f0" stroke-width="1"/>`;
+    aSvg += `<text x="${aPadL - 4}" y="${y + 3}" text-anchor="end" fill="#94a3b8" font-size="9">${val}%</text>`;
+  }
+  // Line + dots (skip null days)
+  const accPts = weekAcc.map((v, i) => {
+    if (v === null) return null;
+    const x = aPadL + (i / 6) * aCW;
+    const y = aPadT + aCH - (v / 100) * aCH;
+    return { x, y, v };
+  });
+  // Connect non-null points with a line
+  const validPts = accPts.filter(p => p !== null);
+  if (validPts.length > 1) {
+    aSvg += `<polyline points="${validPts.map(p => `${p.x},${p.y}`).join(' ')}" fill="none" stroke="#f59e0b" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/>`;
+  }
+  // Dots + value labels
+  validPts.forEach(p => {
+    aSvg += `<circle cx="${p.x}" cy="${p.y}" r="3.5" fill="#f59e0b"/>`;
+    aSvg += `<text x="${p.x}" y="${p.y - 8}" text-anchor="middle" fill="#92400e" font-size="8" font-weight="600">${p.v}%</text>`;
+  });
+  // X labels
+  weekDays.forEach((d, i) => {
+    const x = aPadL + (i / 6) * aCW;
+    aSvg += `<text x="${x}" y="${AH - 4}" text-anchor="middle" fill="#94a3b8" font-size="9">${d.day}</text>`;
+  });
+  aSvg += '</svg>';
+
+  // Monthly accuracy bars
+  const monthAcc = months.map(m => m.total > 0 ? Math.round((m.correct / m.total) * 100) : 0);
+  let maSvg = `<svg viewBox="0 0 ${AW} ${AH}" class="chart-svg">`;
+  // Grid lines
+  for (let i = 0; i <= 4; i++) {
+    const y = aPadT + (i / 4) * aCH;
+    const val = 100 - i * 25;
+    maSvg += `<line x1="${aPadL}" y1="${y}" x2="${AW - aPadR}" y2="${y}" stroke="#e2e8f0" stroke-width="1"/>`;
+    maSvg += `<text x="${aPadL - 4}" y="${y + 3}" text-anchor="end" fill="#94a3b8" font-size="9">${val}%</text>`;
+  }
+  // Bars
+  const aBarGap = aCW / 6;
+  const aBarW = aBarGap * 0.6;
+  months.forEach((m, i) => {
+    const x = aPadL + i * aBarGap + (aBarGap - aBarW) / 2;
+    const accVal = monthAcc[i];
+    const barH = (accVal / 100) * aCH;
+    maSvg += `<rect x="${x}" y="${aPadT + aCH - barH}" width="${aBarW}" height="${barH}" rx="3" fill="#f59e0b" opacity="0.7"/>`;
+    maSvg += `<text x="${x + aBarW / 2}" y="${AH - 4}" text-anchor="middle" fill="#94a3b8" font-size="9">${m.label}</text>`;
+    if (m.total > 0) {
+      maSvg += `<text x="${x + aBarW / 2}" y="${aPadT + aCH - barH - 4}" text-anchor="middle" fill="#92400e" font-size="8" font-weight="600">${accVal}%</text>`;
+    }
+  });
+  maSvg += '</svg>';
+
+  const accContainer = $('#accuracy-chart');
+  accContainer.innerHTML = `
+    <p style="font-size:0.8rem;color:var(--text-secondary);margin-bottom:8px;">Daily (this week)</p>
+    ${aSvg}
+    <p style="font-size:0.8rem;color:var(--text-secondary);margin:12px 0 8px;">Monthly</p>
+    ${maSvg}`;
 }
