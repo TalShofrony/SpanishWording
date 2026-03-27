@@ -221,6 +221,17 @@ async function renderStats() {
     }
   }
 
+  // Reconcile: ensure monthly totals match alltime (covers pre-history-tracking data)
+  const monthlySum = months.reduce((s, m) => s + m.total, 0);
+  const monthlyCorrectSum = months.reduce((s, m) => s + m.correct, 0);
+  const gapTotal = alltime.total - monthlySum;
+  const gapCorrect = alltime.correct - monthlyCorrectSum;
+  if (gapTotal > 0) {
+    const target = months.find(m => m.total > 0) || months[0];
+    target.total += gapTotal;
+    target.correct += Math.max(gapCorrect, 0);
+  }
+
   const rawMaxMonth = Math.max(...months.map(m => m.total), 1);
   const maxMonth = niceAxisMax(rawMaxMonth);
   const MW = 280, MH = 140;

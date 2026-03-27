@@ -51,10 +51,27 @@ function fuzzyCompare(a, b) {
   return dist <= Math.max(Math.floor(maxLen * 0.2), 1);
 }
 
+function isExactMatch(a, b) {
+  const al = a.trim().toLowerCase(), bl = b.trim().toLowerCase();
+  if (al === bl) return true;
+  return stripPrefix(al) === stripPrefix(bl);
+}
+
 function checkAnswer(userAnswer, word, direction) {
-  if (!userAnswer.trim()) return false;
+  if (!userAnswer.trim()) return { correct: false, fuzzy: false, matchedAnswer: '' };
   const candidates = direction === 'es-to-en'
     ? word.english
     : word.spanish.split(' / ').map(s => s.trim());
-  return candidates.some(c => isFuzzyMatch(userAnswer, c));
+
+  // First pass: exact matches (case/prefix insensitive)
+  for (const c of candidates) {
+    if (isExactMatch(userAnswer, c)) return { correct: true, fuzzy: false, matchedAnswer: c };
+  }
+
+  // Second pass: fuzzy matches
+  for (const c of candidates) {
+    if (isFuzzyMatch(userAnswer, c)) return { correct: true, fuzzy: true, matchedAnswer: c };
+  }
+
+  return { correct: false, fuzzy: false, matchedAnswer: '' };
 }

@@ -125,8 +125,8 @@ async function handleCheck() {
   if (!answer) return;
   _userAnswer = answer;
 
-  const correct = checkAnswer(answer, _currentWord, _currentDir);
-  await showResult(correct, _currentDir);
+  const result = checkAnswer(answer, _currentWord, _currentDir);
+  await showResult(result.correct, _currentDir, result.fuzzy, result.matchedAnswer);
 }
 
 async function handleDontKnow() {
@@ -134,7 +134,7 @@ async function handleDontKnow() {
   await showResult(false, _currentDir);
 }
 
-async function showResult(correct, dir) {
+async function showResult(correct, dir, fuzzy = false, matchedAnswer = '') {
   // Update score
   if (correct) {
     _currentWord.score = Math.min(_currentWord.score + 1, 5);
@@ -153,18 +153,37 @@ async function showResult(correct, dir) {
 
   // Show result UI
   const card = $('#quiz-card');
-  card.className = 'quiz-card ' + (correct ? 'correct' : 'wrong');
-
-  const indicator = $('#result-indicator');
-  indicator.textContent = correct ? 'Correct!' : 'Wrong';
-  indicator.className = 'result-indicator ' + (correct ? 'correct' : 'wrong');
-
-  const correctAnswers = dir === 'es-to-en'
-    ? _currentWord.english.join(', ')
-    : _currentWord.spanish;
   const resultAnswer = $('#result-answer');
-  resultAnswer.textContent = correct ? '' : `Answer: ${correctAnswers}`;
-  resultAnswer.style.display = correct ? 'none' : 'block';
+  const indicator = $('#result-indicator');
+
+  if (correct && fuzzy) {
+    card.className = 'quiz-card correct';
+    indicator.textContent = 'Close Enough!';
+    indicator.className = 'result-indicator correct';
+    resultAnswer.textContent = `You wrote "${_userAnswer}" — correct: "${matchedAnswer}"`;
+    resultAnswer.style.display = 'block';
+    resultAnswer.style.borderLeftColor = '#f59e0b';
+    resultAnswer.style.background = 'linear-gradient(135deg, #fffbeb, #fef3c7)';
+  } else if (correct) {
+    card.className = 'quiz-card correct';
+    indicator.textContent = 'Correct!';
+    indicator.className = 'result-indicator correct';
+    resultAnswer.textContent = '';
+    resultAnswer.style.display = 'none';
+    resultAnswer.style.borderLeftColor = '';
+    resultAnswer.style.background = '';
+  } else {
+    card.className = 'quiz-card wrong';
+    indicator.textContent = 'Wrong';
+    indicator.className = 'result-indicator wrong';
+    const correctAnswers = dir === 'es-to-en'
+      ? _currentWord.english.join(', ')
+      : _currentWord.spanish;
+    resultAnswer.textContent = `Answer: ${correctAnswers}`;
+    resultAnswer.style.display = 'block';
+    resultAnswer.style.borderLeftColor = '';
+    resultAnswer.style.background = '';
+  }
 
   // Show "Add Alt Translation" if wrong and user typed something
   if (!correct && _userAnswer) {
